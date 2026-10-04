@@ -1,0 +1,248 @@
+    
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+  <meta charset="UTF-8" /> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
+  <title>Animated Envelope</title> 
+ 
+  <style> 
+    * { 
+      box-sizing: border-box; 
+    } 
+ 
+    body { 
+      margin: 0; 
+      min-height: 100vh; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      background: #e2dff8; 
+      font-family: Georgia, serif; 
+      overflow-x: hidden; 
+    } 
+ 
+    .page { 
+      width: 100%; 
+      max-width: 900px; 
+      padding: 30px 15px; 
+      text-align: center; 
+    } 
+ 
+    h1 { 
+      color: #3b743e; 
+      margin-bottom: 25px; 
+    } 
+ 
+    .envelope-wrapper { 
+      position: relative; 
+      width: min(90vw, 700px); 
+      height: 470px; 
+      margin: 0 auto; 
+      perspective: 1200px; 
+    } 
+ 
+    .envelope { 
+      position: absolute; 
+      left: 50%; 
+      bottom: 20px; 
+      width: 100%; 
+      height: 300px; 
+      transform: translateX(-50%); 
+      cursor: pointer; 
+      transition: transform 0.4s ease; 
+    } 
+ 
+    .envelope:hover { 
+      transform: translateX(-50%) scale(1.02); 
+    } 
+ 
+    .envelope-body { 
+      position: absolute; 
+      inset: 0; 
+      background: #8f6fb4; 
+      border-radius: 0 0 12px 12px; 
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2); 
+      overflow: hidden; 
+      z-index: 3; 
+    } 
+ 
+    /* Diagonal folds on the envelope */ 
+    .envelope-body::before, 
+    .envelope-body::after { 
+      content: ""; 
+      position: absolute; 
+      bottom: 0; 
+      width: 0; 
+      height: 0; 
+      border-style: solid; 
+      z-index: 1; 
+    } 
+ 
+    .envelope-body::before { 
+      left: 0; 
+      border-width: 150px 0 0 350px; 
+      border-color: transparent transparent transparent #755a94; 
+    } 
+ 
+    .envelope-body::after { 
+      right: 0; 
+      border-width: 0 0 150px 350px; 
+      border-color: transparent transparent #755a94 transparent; 
+    } 
+ 
+    .flap { 
+      position: absolute; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 180px; 
+      background: #ab8ce5; 
+      clip-path: polygon(0 0, 100% 0, 50% 100%); 
+      transform-origin: top center; 
+      transition: transform 0.9s ease; 
+      z-index: 5; 
+    } 
+ 
+    .letter { 
+      position: absolute; 
+      left: 5%; 
+      bottom: 15px; 
+      width: 90%; 
+      height: 270px; 
+      padding: 25px; 
+      background: #fffdf5; 
+      color: #33272a; 
+      border-radius: 5px; 
+      overflow-y: auto; 
+      text-align: left; 
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15); 
+      transition: transform 0.9s ease, z-index 0s 0.45s; 
+      z-index: 2; 
+      line-height: 1.6; 
+    } 
+ 
+    .letter h2 { 
+      margin-top: 0; 
+      color: #743b4d; 
+      text-align: center; 
+    } 
+ 
+    .letter p { 
+      white-space: pre-wrap; 
+    } 
+ 
+    .seal { 
+      position: absolute; 
+      z-index: 7; 
+      left: 50%; 
+      top: 145px; 
+      transform: translateX(-50%); 
+      width: 55px; 
+      height: 55px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      border-radius: 50%; 
+      background: #9f304e; 
+      color: white; 
+      font-size: 25px; 
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25); 
+      transition: opacity 0.4s ease; 
+    } 
+ 
+    .instructions { 
+      margin-top: 20px; 
+      color: #743b4d; 
+      font-size: 1rem; 
+    } 
+ 
+    /* Open state */ 
+    .envelope.open .flap { 
+      transform: rotateX(180deg); 
+      z-index: 1; 
+    } 
+ 
+    .envelope.open .letter { 
+      transform: translateY(-230px); 
+      z-index: 6; 
+      transition: transform 0.9s ease, z-index 0s; 
+    } 
+ 
+    .envelope.open .seal { 
+      opacity: 0; 
+      pointer-events: none; 
+    } 
+ 
+    @media (max-width: 600px) { 
+      .envelope-wrapper { 
+        height: 430px; 
+      } 
+ 
+      .envelope { 
+        height: 240px; 
+      } 
+ 
+      .letter { 
+        height: 220px; 
+        padding: 18px; 
+      } 
+ 
+      .flap { 
+        height: 145px; 
+      } 
+ 
+      .seal { 
+        top: 115px; 
+        width: 48px; 
+        height: 48px; 
+      } 
+ 
+      .envelope-body::before { 
+        border-width: 120px 0 0 200px; 
+      } 
+ 
+      .envelope-body::after { 
+        border-width: 0 0 120px 200px; 
+      } 
+    } 
+  </style> 
+</head> 
+ 
+<body> 
+    <div class="he"> 
+  <main class="page"> 
+    <h1>a letter to fav ppl </h1> 
+ 
+    <div class="envelope-wrapper"> 
+      <div class="envelope" id="envelope"> 
+        <div class="letter"> 
+          <h2>my bean, </h2> 
+ 
+          <p> 
+ hi ik ur kinda gona cringe at this but ahh i really dont know any other ways to put it so deal w it,its not the best news iam abt to tell n there is a very high change u get mad at me n shi but here  it goes ... i lik u lik lik lik kinda lik u ahhh ik awkward n pls trust me on this i have tried everything in my power not to feel all this ok i have suppressed it n try not think abt it at all 4 so long but i keep coming back i haven't told any1 but u now... i tried not to think of amm lets just say some1 here in that way cuz idk if its gona end well but i cant help it i really really cant, i would do anything to change the way i see some1 here cuz ik that we cant even b frens, lik there is nthg here and ahh i think in all this time u have learnt to trust me n tell me everything but i have been lying to u since lik 8th i feel so guilty abt it, lik every time u say hu i have lik a burst of warmth in me n then i feel lik bad cuz u dont mean it when u say it .... i wanna say sor to u first 4 this idk how it happened it just did i mean look at u how could i not ur the most perfect ppl i have seen every time iam low when i feel lik shi ur the first ppl that come to mind to ask help n the worst part abt all this is u do help without knowing how iam asking 4 it n ahh i dont even wanna go to talk abt ur perfect ahh face every time u smile i just wanna hv u n never wanna let go n i have to make sth clear i dont expect u to  ch chh me iam not asking 4 ff type shi ok ik ur stand on it n i agree we kinda too young n i dont wanna rush into sth n then ruin it(very mature def ) + we 10th kinda not the best time 4 all this  but thats not y iam telling u abt this i telling u just so ahh all the time i just want to tell u how much u mean to some1 here i dont really even have words 4 it ok n iam sor if u think this is lik gross cuz i called u “twin”or is me lying to u not just cuz i dint tell u abt this b4 but all the shipping i did w ch n hr n 15 n whatnot n calling u bro it was just ahh a cynical cruel way of coping 4 me every time id ship u ud say u dont lik them n ik itd fucked up but ahhh it gave me the feeling that u wouldnt pick me but nither would u pick them.....n u can b as mad abt it to me as u want lik ik its gona b awkward 4u to read this but just pls dont stop talking to me u not talking is the only thing that was holding me bac fron telling u all this b4 n i just want to let uk how much ppl(i+ others too) admire u y u so perfect?u never seem to understand lik every1 gravitates to u how can u b smart at everything else but this??? in the non-freakiest way ever( i promise) i fall asleep to the sound of ur voice in my head everyday, uk when i cry myself to sleep the only way i can calm down is by vh-ing my pillow n thinking its ahh some1 else who is reading this rn....i think u have seen the web i made by now? uk how much i Hate coding? lik i Hated it but i did it 4 u n ahh idk but i dint Hate a single sec of it cuz i pictured u listening to me play n it was all worth it to me iam sor idk if u even lik me as a fren really or do u thinkn iam annoying cuz u seem so happy around ppl lik ch n bil n ahh idk i feel lik u forget me when u r w them n i Hate that i Hate it when i think u do or iam acting lik aakash here n idk if iam ruining  our frenship idk if iam taking away a place u (i think) count as ur safe space but iam just done w lying n also ik ppl make it to b freaky i really wanna tell u the way i look at u aint that ok i aint dhrirt to wanna b laid or some shi i just really wanna b a ppl u can talk to. idk what u think of me ok i really dont cuz lik u say hu ur my fav ppl n also u remember the time chh gave ch his sweater n u told me i could have urs???? lik what do i make out of that man n then u call me sis twin n that u will not get a ff cuz gecho n ahhhhh it all is so confusing n the one of the main reasons iam telling u this rn is cuz ik if u even slightly feel the same u wont tell me ever cuz ik u will b too sacred to speak n i just cant live w it anymore. i think by now u got what iam trying to tell u if u dint lik what i said till now dont read the rest cuz u wont lik it ahhhhh iam just gona rant abt u now can i tell u sth uk how i told abt the l block after farewell thing? i Hate that i said that n then chickened out  ok u i Hate it uk just how many times i have pictured it going in my mind? every night lik clockwork its the only thing on top of my mind i wish i could hold u near me just hold u in my arm every time u cry or r upset i have this thing where i just want to fix things for u lik u remember the entire tissues thing i just wanned to hlpe u it isnt cuz i wanned u to lik me cuz i helped u or sth lik that but cuz ik i will never lik deserve u so i just wanna make ur life a tiny bit better u notice or not ik how it sounds ok ik it sounds fresky but its not that idk how to defend me but lik i havent even lik sat next to u in a seat yet i think somehow just being near u will fix everything <img src="musics\Screenshot 2026-10-04 170456.png" height="200px"width200px><br> u make everything feel so good u dont understand lik just looking at u makes me feel better i never would tell any1 else abt how ahhh insecure n shi i feel cuz i feel lik if i point out sth in me ppl just gona notice it more but w u i just wanna talk abt me cuz u make me feel so safe lik i feel ok around u idk how to put it but u point out how u dint think i liked u as a fen cuz a lot of my convos w u r sad but how do i tell u in a way that is " just as a fren" that, that persons words feel lik iam sinking into my bed n pillows but i dont have a pillow its just ur arm iam sleeping on while u vh me from the back n ik iam so sor for all this idk how do i even put it in words but shi all this f also u remember all the times i told u to not come down when iam down its cuz i get flusterd okay i couldnt use that word with u cuz lik ahhhh but ur lik too pretty and too special to me 4 me to see u out n abount n not lik idk melt also we had a covo abt how i dont know how getting a butterflies feel likk u dumb bish i do i get them every time u look at me n every sec when i was standing behind u in martchpass every time i fucking think abt u mannnnn also idk y but i hate the way ur pinky iam always curled lik u never have it straight its always curled i hate it so its so adoreble to me i tried doing the same but i cant but i hatee it on u👉👈; if there is nthg going on here as i think there isnt, i just wanna say one last thing ty ur the only ppl i talk to uk how i think abt me but the only time i dont feel worthless is when iam around u lik u dont even have to say it out loud its just in the way u act that ik wnat iam abt to say is cringe but makes me feel hated without it being a show. every time i catch u looking my direction i just feel so bad one cuz i ahh get self-conscious n think ur gona think iam not some1 worth lik even existing around u n second cuz again i physically get warm its the most comforting n Hateful thing at the same time n third I perceive it as being hated on lik u dont Hate me. sor if this too much i dont mean to overwhelm u even tho ik this will ahhh i dont even know if 21 w u is gona b real but i wish u have the most perfect 21st  even if ik ill prolly not b near u just know that on my 21st n every bday nb4 n after it ill save the first slice of cake 4 u cuz u give it to ur fav person <br><br> -----G  
+<br> 
+ 15/8/2025 ahhhhh today was Independence day hahah i bet u couldnt tell dharmesh gave me a packet of chips n we shared it in the bus u took the wraper w u n told me ur gona frame it ??????? dude y u lik this y dont u just tell me whats on ur mind ????????? lik one min ur gona b shipping me w 11 cuz he made a stick of my face n then the other say shi lik id watch ur face it i die what am i sapposed to do w this info hhuhuhu???????? u also told me u dint lik the way u smilled in one of the picks we had taken in class u really r stupid uk just 4 how long i have looked at it ????just looking at some1’face who is reading this rn here makes my day better lik fr it does i swear ur stupid i hate ur face just look at thoses doe eyes i had them too ones upon a time I Hate my eyes not but also hate them cuz they let me see u :))))) EVERY DAYYYYYYYY its the best thing on this planet ok if u think u can take him talkin abother another girl and stuff then yes dont confess,but if u want to have a chance confess,no risk no gain yeah?       
+<br>
+25/8/26 ahhhhh idk if iam even gona put this into the final web but i need to rant n i cant to it w u cuz its abt u so ya ahhhhh yesterday we went to abhay 4 the dr. donald thomas's speech it was sooo good i really lik him but ahh u n ch were sitting next to each other while i had mt on one side n eshal on the other i was abt to die bro lik i wanned to sit there n then u were talking to ch 4 lik 3h n giving her ur pouch n shi i was so mad at u lik how could u n then while dispersal rani mam was mad at me 4 sth n then u got mad at her n then in the bus even tho i was mad at u i fking couldnt see u mad lik that u were all upset n i was trying to calm u dont but ammm can i admit sth? i was just lik lookinh at ur face i just wish some1 lik ran over ur face cuz i couldnt look at it u were ahhhh u got all red cuz u were mad n ur hair was sweaty so it had lik ctarted to clump up n curl n iam so sor to say this but u were abt to cry so ur eyes were lik idkkk the word 4 it but god dam i Hate to say this outloud but i couldnt careless abt the fact that u were crying i was just lik got u look so high temp f shi u did i cant lie sor ik its a lil gross of me to say shi lik that but god dam u r n then when u finally calmed down u started shipping anj n then i got mad at u again 4 sitting w ch lol n today u were still mad abt the mam thing n she scholded u again today n u full on cried in bus SIR DO U KNOW HOW BAD I WANNA HOLD U CLOSE TO ME WHEN U CRY? idk if ur gona b weird abt this (ik u r gona b abt all of this but ya no f)i just wanned to harini ur forehead cup ur face in my hands run my fingers through ur hair n tell u its gona b ok n f god i had to sit there next to dharmesh n b normal pls dont cry ever man u dont deserve to ever not smile also u have the most perfect smile lik ahhhhhhhhhhhh i canttttttttttttttttttttttt look at u id give anything to b u 
+<br>
+ 5/9/26 god dam it u looked sooooooooooo high temp omg do uk how much i wanna kill u also i might have miss spelled the word kill n it might have 2 s insted of 2 l's iam sor iam really sor i think this but i do god dam it i do in the bus in my room its not freaky but its ahhhh freaky safjad;ljg;oerrgrejgt i just wanna b w u so baddddddddddddd 
+16/9/26 i was in my lik normal cloths n my parents made me go down 4 the ganesh n i started crying in the mid of the ground i just fealt so out of place n shi n uk how i told u abt when anything happens i just shut down n not talk i dint wanna talk to u + on top of that u were talking abt hr which made me even more sad but then i realized that even when i was being mean to u in the chat n was dry u still were the nicest ppl u dint have to but u still asked me what i ate cuz ur worried abt me(4 no reason)n u said that " there aint a song u told me to listen to n i dint lik" i feel so shi now 4 lik being mean to u ian never nice enough i feel lik whatever i do u still hate me n u walk on ur tip toes around me cuz u wouldnt in anysituation wanna upset me its a Hate n hate situation cuz its so nice to have a ppl who cares enough to keep thingss in mind abt me what i lik n dont but then i feel shi cuz that means u dont feel confe enough to b free agound me iam sor i lik this also i ship u w ch sometimes cuz u really seem so happy around her u never get in trouble cuz of her u r mean to her which means uk she will never b mad at u but u arent lik that w me n ahh idk what iam saying this is just a rant i had to get out i hope u dont make fun of me 4 all this this web feels so special to me this is the first time i have been this open w some1 n idk ur so nice all the time n i aint that to u n ur happier around other ppl n it makes me mad that sometimes it makes me sad that i aint lik ch n make u feel ok 
+<br> we were watching anime n u asked me id when i say all the things abt LTW i mean it or not... do uk ow bad i want it its gona b letral heven 4 me 
+          </div> 
+ 
+        <div class="envelope-body"></div> 
+        <div class="flap"></div> 
+        <div class="seal">✿</div> 
+      </div> 
+    </div> 
+  <script> 
+    const envelope = document.getElementById("envelope"); 
+ 
+    envelope.addEventListener("click", function () { 
+      envelope.classList.toggle("open"); 
+    }); 
+  </script>
+</body> 
+</html> 
+ 
